@@ -15,13 +15,19 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_library(lab3_lib STATIC src/eleven.cpp)
+add_library(lab3_lib STATIC
+  src/point.cpp
+  src/figure.cpp
+  src/pentagon.cpp
+  src/hexagon.cpp
+  src/octagon.cpp
+  src/array.cpp)
 add_executable(lab3_exe main.cpp)
 
 target_link_libraries(lab3_exe lab3_lib)
 
 enable_testing()
-add_executable(tests test/test02.cpp)
+add_executable(tests test/test03.cpp)
 target_link_libraries(tests lab3_lib gtest_main)
 
 add_test(NAME Lab3-Tests COMMAND tests)

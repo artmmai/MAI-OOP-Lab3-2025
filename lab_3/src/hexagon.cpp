@@ -44,6 +44,9 @@ Point Hexagon::getCenter() const {
 bool Hexagon::isCorrect() const {
     const double EPS = 1e-6;
 
+    if (size != 6)
+        return false;
+
     for (int i = 0; i < 6; ++i){
         for (int j = i + 1; j < 6; ++j){
             double dx = points[i].get_x() - points[j].get_x();
@@ -53,5 +56,21 @@ bool Hexagon::isCorrect() const {
             }
         }
     }
+
+    double dx0 = points[1].get_x() - points[0].get_x();
+    double dy0 = points[1].get_y() - points[0].get_y();
+    double base_side = std::sqrt(dx0 * dx0 + dy0 * dy0);
+
+    for (int i = 1; i < 6; ++i) {
+        int j = (i + 1) % 6;
+        double dx = points[j].get_x() - points[i].get_x();
+        double dy = points[j].get_y() - points[i].get_y();
+        double curr_side = std::sqrt(dx * dx + dy * dy);
+
+        if (std::fabs(curr_side - base_side) > EPS) {
+            return false;
+        }
+    }
+
     return static_cast<double>(*this) > EPS;
 }

@@ -4,7 +4,8 @@
 // Создаём фигуру из 5 точек
 Pentagon::Pentagon() : Figure(5){}
 
-// Вычисление площади методом Гаусса
+// Вычисление площади с помощью формулы Гаусса
+// универсальной для любых многоугольников
 Pentagon::operator double() const {
     double area = 0.0;
     for(size_t i = 0; i < 5; ++i){
@@ -56,6 +57,22 @@ bool Pentagon::isCorrect() const {
             }
         }
     }
+
+    double dx0 = points[1].get_x() - points[0].get_x();
+    double dy0 = points[1].get_y() - points[0].get_y();
+    double base_side = std::sqrt(dx0 * dx0 + dy0 * dy0);
+
+    for (int i = 1; i < 5; ++i) {
+        int j = (i + 1) % 5;
+        double dx = points[j].get_x() - points[i].get_x();
+        double dy = points[j].get_y() - points[i].get_y();
+        double curr_side = std::sqrt(dx * dx + dy * dy);
+
+        if (std::fabs(curr_side - base_side) > EPS) {
+            return false;
+        }
+    }
+    
     return static_cast<double>(*this) > EPS;
 }
 

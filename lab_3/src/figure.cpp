@@ -1,52 +1,84 @@
 #include "../include/figure.h"
 #include <cmath>
 
-Figure::Figure(size_t n) : points(n) {}
+Figure::Figure() : points(nullptr), size(0) {}
 
-Figure::Figure(const Figure& other) : points(other.points) {}
+Figure::Figure(size_t n) : size(n), points(nullptr) {
+    if (n > 0){
+        points = new Point[n];
+    }
+}
 
-Figure::Figure(Figure&& other) noexcept : points(std::move(other.points)) {}
+Figure::~Figure() {
+    delete[] points;
+}
 
-Figure& Figure::operator=(const Figure& other){
-    if (this != &other){
+Figure::Figure(const Figure& other) : size(other.size) {
+    points = new Point[size];
+    for (size_t i = 0; i < size; ++i)
+        points[i] = other.points[i];
+}
+
+Figure::Figure(Figure&& other) noexcept : points(other.points), size(other.size) {
+    other.points = nullptr;
+    other.size = 0;
+}
+
+// Присваивание копированием
+Figure& Figure::operator=(const Figure& other) {
+    if (this != &other) {
+        delete[] points;
+        size = other.size;
+        points = new Point[size];
+        for (size_t i = 0; i < size; ++i)
+            points[i] = other.points[i];
+    }
+    return *this;
+}
+
+// Присваивание перемещением
+Figure& Figure::operator=(Figure&& other) noexcept {
+    if (this != &other) {
+        delete[] points;
         points = other.points;
+        size = other.size;
+        other.points = nullptr;
+        other.size = 0;
     }
     return *this;
 }
 
-Figure& Figure::operator=(Figure&& other) noexcept{
-    if (this != &other){
-        points = std::move(other.points);
-    }
-    return *this;
-}
-
-bool Figure::operator==(const Figure& other) const{
+// Сравнение фигур по коорд-ам
+bool Figure::operator==(const Figure& other) const {
     const double EPS = 1e-6;
-    if (points.size() != other.points.size()){
+    if (size != other.size)
         return false;
-    }
 
-    for (size_t i = 0; i < points.size(); ++i){
-        if (std::abs(points[i].get_x() - other.points[i].get_x()) > EPS ||
-            std::abs(points[i].get_y() - other.points[i].get_y()) > EPS){
-                return false;
-            }
+    for (size_t i = 0; i < size; ++i) {
+        if (std::fabs(points[i].get_x() - other.points[i].get_x()) > EPS ||
+            std::fabs(points[i].get_y() - other.points[i].get_y()) > EPS)
+            return false;
     }
     return true;
 }
 
-std::ostream& operator<<(std::ostream& os, const Figure& f){
-    for (const auto& p : f.points){
-        os << p << " ";
-    }
+size_t Figure::getPointCount() const noexcept {
+    return size;
+}
+
+const Point& Figure::getPoint(size_t idx) const {
+    if (idx >= size) throw std::out_of_range("Point index out of range");
+    return points[idx];
+}
+
+std::ostream& operator<<(std::ostream& os, const Figure& f) {
+    for (size_t i = 0; i < f.size; ++i)
+        os << f.points[i] << " ";
     return os;
 }
 
-std::istream& operator>>(std::istream& is, Figure& f){
-    for (auto& p : f.points){
-        is >> p;
-    }
+std::istream& operator>>(std::istream& is, Figure& f) {
+    for (size_t i = 0; i < f.size; ++i)
+        is >> f.points[i];
     return is;
 }
-

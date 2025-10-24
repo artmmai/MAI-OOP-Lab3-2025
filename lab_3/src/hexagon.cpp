@@ -1,21 +1,24 @@
 #include "../include/hexagon.h"
 #include <cmath>
 
-
 // Создаём фигуру из 6 точек
 Hexagon::Hexagon() : Figure(6){}
 
-// Вычисление площади методом Гаусса
+// Вычисление площади с помощью формулы Гаусса
+// универсальной для любых многоугольников
 Hexagon::operator double() const {
-    double s = 0.0;
+    double area = 0.0;
     for(size_t i = 0; i < 6; ++i){
         size_t j = (i + 1) % 6;
-        s += points[i].get_x() * points[j].get_y() - points[j].get_x() * points[i].get_y();
+        area += points[i].get_x() * points[j].get_y() - points[j].get_x() * points[i].get_y();
     }
-    return 0.5 * std::fabs(s);
+    return 0.5 * std::fabs(area);
 }
 
-// Геометрический центр фигуры 
+const char* Hexagon::getName() const{
+    return "Hexagon";
+}
+
 Point Hexagon::getCenter() const {
     const double EPS = 1e-6;
     double area = static_cast<double>(*this);
@@ -39,6 +42,16 @@ Point Hexagon::getCenter() const {
 }
 
 bool Hexagon::isCorrect() const {
-    return points.size() == 6 && double(*this) > 1e-6;
-}
+    const double EPS = 1e-6;
 
+    for (int i = 0; i < 6; ++i){
+        for (int j = i + 1; j < 6; ++j){
+            double dx = points[i].get_x() - points[j].get_x();
+            double dy = points[i].get_y() - points[j].get_y();
+            if (std::sqrt(dx * dx + dy * dy) < EPS){
+                return false;
+            }
+        }
+    }
+    return static_cast<double>(*this) > EPS;
+}

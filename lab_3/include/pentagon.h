@@ -9,6 +9,7 @@ public:
 
     virtual Point getCenter() const override;
     virtual bool isCorrect() const override;
+    virtual const char* getName() const override;
     explicit operator double() const override;
 };
 

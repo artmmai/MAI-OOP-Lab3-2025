@@ -29,6 +29,10 @@ void Array::push_back(Figure* f){
     arr[size++] = f;
 }
 
+bool Array::empty() const{
+    return size == 0;
+}
+
 void Array::remove(size_t idx){
     if (idx >= size) {
         throw std::out_of_range("Index out of range");
@@ -71,10 +75,25 @@ double Array::totalArea() const {
 }
 
 void Array::printAll() const {
-    for (size_t i = 0; i < size; ++i){
-        std::cout << "Figure " << i << ": " << *arr[i];
+    if (size == 0) {
+        std::cout << "No figures in array.\n";
+        return;
+    }
+
+    for (size_t i = 0; i < size; ++i) {
+        std::cout << "\n=== Figure " << i << " (" << arr[i]->getName() << ") ===\n";
+
+        size_t n = arr[i]->getPointCount();
+        std::cout << "Points:\n";
+        for (size_t j = 0; j < n; ++j) {
+            const Point &p = arr[i]->getPoint(j);
+            std::cout << "  (" << p.get_x() << ", " << p.get_y() << ")\n";
+        }
+
         Point center = arr[i]->getCenter();
-        std::cout << " Center: " << center;
-        std::cout << " Area: " << static_cast<double>(*arr[i]) << "\n";
+        double area = static_cast<double>(*arr[i]);
+
+        std::cout << "Center: (" << center.get_x() << ", " << center.get_y() << ")\n";
+        std::cout << "Area: " << area << "\n";
     }
 }

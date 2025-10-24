@@ -6,13 +6,18 @@ Octagon::Octagon() : Figure(8){}
 
 // Вычисление площади методом Гаусса
 Octagon::operator double() const {
-    double s = 0.0;
+    double area = 0.0;
     for(size_t i = 0; i < 8; ++i){
         size_t j = (i + 1) % 8;
-        s += points[i].get_x() * points[j].get_y() - points[j].get_x() * points[i].get_y();
+        area += points[i].get_x() * points[j].get_y() - points[j].get_x() * points[i].get_y();
     }
-    return 0.5 * std::fabs(s);
+    return 0.5 * std::fabs(area);
 }
+
+const char* Octagon::getName() const {
+    return "Octagon";
+}
+
 // Геометрический центр фигуры 
 Point Octagon::getCenter() const {
     const double EPS = 1e-6;
@@ -37,6 +42,15 @@ Point Octagon::getCenter() const {
 }
 
 bool Octagon::isCorrect() const {
-    return points.size() == 8 && double(*this) > 1e-6;
+    const double EPS = 1e-6;
+    for (int i = 0; i < 8; ++i){
+        for (int j = i + 1; j < 8; ++j){
+            double dx = points[i].get_x() - points[j].get_x();
+            double dy = points[i].get_y() - points[j].get_y();
+            if (std::sqrt(dx * dx + dy * dy) < EPS){
+                return false;
+            }
+        }
+    }
+    return static_cast<double>(*this) > EPS;
 }
-

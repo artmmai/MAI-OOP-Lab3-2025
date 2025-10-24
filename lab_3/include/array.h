@@ -18,6 +18,7 @@ public:
     Array& operator=(const Array&) = delete;
 
     void push_back(Figure* f);
+    bool empty() const;
     void remove(size_t idx);
     Figure* operator[](size_t idx) const;
     size_t getSize() const;

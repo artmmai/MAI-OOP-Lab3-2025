@@ -6,12 +6,13 @@
 
 class Figure{
 protected:
-    std::vector<Point> points;
+    Point* points; // массив точек, задающих вершины фигуры
+    size_t size; 
 
 public:
-    Figure() = default;
+    Figure();
     Figure(size_t n);
-    virtual ~Figure() = default;
+    virtual ~Figure();
 
     Figure(const Figure& other);
     Figure(Figure&& other) noexcept;
@@ -24,6 +25,9 @@ public:
     virtual Point getCenter() const = 0;
     virtual bool isCorrect() const = 0;
     virtual operator double() const = 0; // площадь
+    size_t getPointCount() const noexcept;
+    const Point& getPoint(size_t idx) const;
+    virtual const char* getName() const = 0;
 
     friend std::ostream& operator<<(std::ostream& os, const Figure& f);
     friend std::istream& operator>>(std::istream& is, Figure& f);
